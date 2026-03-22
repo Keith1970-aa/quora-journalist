@@ -21,7 +21,7 @@
 <script>
 async function approveAction() {
     // PASTE YOUR MAKE.COM LINK BELOW
-    const webhookURL = "https://hook.us1.make.com/xxxxxx"; 
+    const webhookURL = "https://hook.eu1.make.com/a95ucr01xs9fqpo4kf4l2e3i5c3wcn13"; 
     
     const status = document.getElementById('status');
     const topic = document.getElementById('q-title').innerText;
@@ -31,8 +31,7 @@ async function approveAction() {
 
     try {
         await fetch(webhookURL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: "POST",            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ topic: topic })
         });
         status.innerHTML = "SENT! Check your email in 1 minute. ✅";
