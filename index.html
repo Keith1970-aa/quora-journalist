@@ -1,46 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Quora Content Engine</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quora Journalist - AI Article Generator</title>
     <style>
-        body { font-family: sans-serif; padding: 40px; background: #f4f4f4; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; }
-        #status { margin-top: 15px; font-weight: bold; text-align: center; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f7f7f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            border-top: 5px solid #b92b27; /* Quora Red */
+        }
+        h2 { color: #b92b27; margin-bottom: 20px; }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #dee0e1;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        button {
+            background-color: #b92b27;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover { background-color: #a32421; }
+        #status { margin-top: 15px; font-size: 14px; color: #636466; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2 id="q-title">How can AI help real estate agents in the Philippines?</h2>
-    <p>Click approve to send this topic to the Journalist AI.</p>
-    <button onclick="approveAction()">APPROVE & GENERATE</button>
-    <div id="status">STATUS: Ready</div>
+    <h2>Quora Journalist AI</h2>
+    <p>Type the question or topic you want to turn into an investigative article.</p>
+    
+    <input type="text" id="quoraTopic" placeholder="What is your Quora question?">
+    
+    <button onclick="triggerEngine()">GENERATE ARTICLE</button>
+    
+    <div id="status"></div>
 </div>
 
 <script>
-async function approveAction() {
-    // PASTE YOUR MAKE.COM LINK BELOW
-    const webhookURL = "https://hook.eu1.make.com/a95ucr01xs9fqpo4kf4l2e3i5c3wcn13"; 
-    
-    const status = document.getElementById('status');
-    const topic = document.getElementById('q-title').innerText;
+    function triggerEngine() {
+        const topic = document.getElementById('quoraTopic').value;
+        const status = document.getElementById('status');
+        
+        // PASTE YOUR MAKE.COM WEBHOOK URL BELOW
+        const webhookUrl = "PASTE_YOUR_MAKE_WEBHOOK_URL_HERE";
 
-    status.innerHTML = "Sending to Brain...";
-    status.style.color = "orange";
+        if (!topic) {
+            status.innerText = "⚠️ Please enter a topic first.";
+            status.style.color = "orange";
+            return;
+        }
 
-    try {
-        await fetch(webhookURL, {
-            method: "POST",            headers: { "Content-Type": "application/json" },
+        status.innerText = "🚀 Sending to AI journalist...";
+        status.style.color = "#b92b27";
+
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ topic: topic })
+        })
+        .then(res => {
+            if (res.ok) {
+                status.innerText = "✅ Done! Check your Gmail for the draft.";
+                status.style.color = "green";
+                document.getElementById('quoraTopic').value = "";
+            } else {
+                status.innerText = "❌ Connection Error.";
+                status.style.color = "red";
+            }
+        })
+        .catch(err => {
+            status.innerText = "❌ Network Error. Check Webhook URL.";
+            status.style.color = "red";
         });
-        status.innerHTML = "SENT! Check your email in 1 minute. ✅";
-        status.style.color = "green";
-    } catch (e) {
-        status.innerHTML = "Error connecting to Make.com";
-        status.style.color = "red";
     }
-}
 </script>
 
 </body>
